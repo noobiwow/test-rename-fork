@@ -1,0 +1,36 @@
+name: Rename files on fork/clone
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/TEMPLATE_MARKER'
+
+jobs:
+  rename:
+    runs-on: ubuntu-latest
+    # ⚠️ VALEUR À MODIFIER : remplacez par "VOTRE_ORG/VOTRE_REPO_SOURCE"
+    if: github.repository != 'test-rename-fork'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Rename files and replace placeholders
+        run: |
+          REPO_NAME="${{ github.event.repository.name }}"
+          bash scripts/rename.sh "$REPO_NAME"
+
+      - name: Remove sentinel file
+        run: rm -f .github/TEMPLATE_MARKER
+
+      - name: Commit changes
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore: initialize repository as '${{ github.event.repository.name }}'"
+          git push

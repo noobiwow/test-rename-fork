@@ -1,0 +1,9 @@
+{
+  "project": "__REPO_NAME__",
+  "version": "1.0.0",
+  "description": "Configuration for __REPO_NAME__",
+  "author": "",
+  "scripts": {
+    "start": "node index.js"
+  }
+}
